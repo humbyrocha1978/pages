@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guia turistica pela cidade de Firenze</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .slider-container {
+            position: relative;
+            overflow: hidden;
+            height: 250px;
+        }
+        .slider {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+        .slide {
+            flex-shrink: 0;
+            width: 100%;
+            height: 250px;
+            background-size: cover;
+            background-position: center;
+        }
+        .slider-dots {
+            position: absolute;
+            bottom: 10px;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: center;
+            gap: 5px;
+        }
+        .slider-dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background-color: rgba(255,255,255,0.5);
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .slider-dot.active {
+            background-color: white;
+            transform: scale(1.2);
+        }
+        .filter-btn.active {
+            background-color: #4338ca; /* indigo-700 */
+            color: white;
+            font-weight: bold;
+        }
+        @media (min-width: 768px) {
+            .slider-container {
+                height: 300px;
+            }
+            .slide {
+                height: 300px;
+            }
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <header class="bg-white shadow-md">
+        <div class="container mx-auto px-4 py-6">
+            <h1 class="text-3xl md:text-4xl font-bold text-center text-indigo-800">
+                <i class="fas fa-map-signs mr-2"></i> Guia turistica de Firenze
+            </h1>
+            <p class="text-center text-gray-600 mt-2">Descubra os tesouros artísticos, os mercados históricos e o artesanato da cidade num tour criado por Humberto Rocha Loureiro</p>
+        </div>
+    </header>
+
+    <main class="container mx-auto px-4 py-8">
+        <!-- Contenitore per i filtri -->
+        <div id="filter-container" class="flex flex-wrap justify-center gap-2 mb-8">
+            <!-- I pulsanti di filtro verranno inseriti qui da JavaScript -->
+        </div>
+
+        <!-- Griglia per le card -->
+        <div id="locations-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <!-- Le card verranno inserite qui da JavaScript -->
+        </div>
+    </main>
+
+    <footer class="bg-gray-800 text-white py-6">
+        <div class="container mx-auto px-4 text-center">
+            <p>© 2025 Guida di Firenze</p>
+        </div>
+    </footer>
+
+    <script>
+        const locations = [
+            // --- Museus ---
+            {
+                "title": "Galeria Uffizi",
+                "description": "Mergulhe no coração do Renascimento na Galeria Uffizi, uma das mais prestigiadas galerias de arte do mundo. Nascida em 1581 por vontade do Grão-Duque Francesco I de' Medici, foi projetada pelo genial Giorgio Vasari para abrigar os escritórios administrativos de Florença. Hoje, percorrer seus corredores significa fazer uma viagem pela história da arte, admirando de perto obras-primas de Botticelli, como 'O Nascimento de Vênus', invenções de Leonardo da Vinci e a força escultural de Michelangelo.",
+                "gps_coordinates": { "latitude": 43.7688, "longitude": 11.2553 },
+                "google_maps_link": "https://www.google.com/maps/search/?api=1&query=Galleria+degli+Uffizi,Firenze",
+                "category": "Arte Renascentista",
+                "images": [
+                    "https://media.z-suite.it/lestanzedelduomo.it/public/crop/Esperienze--galleria-uffizi-870x560.jpg?v=1",
+                    "https://www.spuntidiviaggio.it/wp-content/uploads/2022/01/cosa-veder-agli-uffizi-di-firenze-i-corridoi-palazzo-galleria-degli-uffizi-spuntidiviaggio.jpg",
+                    "https://media.cultura.gov.it/mibac/files/boards/be78e33bc8ca0c99bff70aa174035096/Luoghi/23_Firenze-Uffizi.jpg",
+                    "https://www.spuntidiviaggio.it/wp-content/uploads/2020/07/Ercole-e-il-centauro-di-Giovanni-Caccini-agli-Uffizi.jpg",
+                    "https://www.spuntidiviaggio.it/wp-content/uploads/2020/07/tribuna-galleria-degli-uffizi-firenze.jpg"
+                ]
+            },
+            {
+                "title": "Galeria da Academia",
+                "description": "Prepare-se para encontrar um ícone: o Davi de Michelangelo em todo o seu esplendor. A Galeria da Academia, fundada em 1784 pelo Grão-Duque Pietro Leopoldo, foi concebida como um espaço didático para os estudantes de Belas Artes. [16] Além de abrigar a estátua mais famosa do mundo, a galeria oferece um percurso que inclui outras esculturas de Michelangelo, uma fascinante coleção de instrumentos musicais antigos e uma gipsoteca que revela os segredos dos escultores do século XIX.",
+                "gps_coordinates": { "latitude": 43.7768, "longitude": 11.2585 },
+                "google_maps_link": "https://www.google.com/maps/search/?api=1&query=Galleria+dell'Accademia,Firenze",
+                "category": "Arte Renascentista",
+                "images": [
+                    "https://artemagazine.it/wp-content/uploads/2023/08/galleria.jpg",
+                    "https://www.lavoroediritto.it/wp-content/uploads/2011/05/accademia-belle-arti-firenze.jpg",
+                    "https://www.visittuscany.com/shared/visittuscany/immagini/gipsotecagalleria.jpeg",
+                    "https://citynews-firenzetoday.stgy.ovh/~media/horizontal-mid/50226972423346/galleria-dell-accademia.jpg",
+                    "https://cdn.city-sightseeing.it/Product/245/a6d57267-d44c-492b-ad82-574eda145ec1.jpg"
+                ]
+            },
+            {
+                "title": "Palácio Pitti",
+                "description": "Atravesse o Arno e descubra a majestosa residência dos Médici. O Palácio Pitti, originalmente encomendado pelo banqueiro Luca Pitti em 1458 para desafiar os Médici, tornou-se o símbolo do poder deles quando Eleonora de Toledo o comprou em 1549. [4, 9] Hoje, este imponente palácio abriga um complexo de museus extraordinário: da Galeria Palatina, com suas obras-primas de Rafael e Ticiano, à Galeria de Arte Moderna, passando pelo Museu da Moda e do Traje, cada sala conta uma história de luxo e poder. [4]",
+                "gps_coordinates": { "latitude": 43.7645, "longitude": 11.2503 },
+                "google_maps_link": "https://www.google.com/maps/search/?api=1&query=Palazzo+Pitti,Firenze",
+                "category": "Complexo de Museus",
+                "images": [
+                    "https://cdn-imgix.headout.com/media/images/f556a46f901d589a338a37fb22def4e7-15258-florence-palazzo-pitti---palatine-gallery-entry---boboli-gardens-tickets-02.jpg?auto=format&w=900&h=562.5&q=90&ar=16%3A10&crop=faces%2Ccenter&fit=crop",
+                    "https://upload.wikimedia.org/wikipedia/commons/thumb/4/42/Palacio_Pitti%2C_Florencia%2C_Italia%2C_2022-09-18%2C_DD_136-138_HDR.jpg/1280px-Palacio_Pitti%2C_Florencia%2C_Italia%2C_2022-09-18%2C_DD_136-138_HDR.jpg",
+                    "https://cdn-imgix.headout.com/blog-content/image/bbc6927b89132329beeb5d1ad0a33a51-Palazzo%20Pitti.jpg?auto=format&w=900&h=562.5&q=90&ar=16%3A10&fit=crop",
+                    "https://www.gbsapritalk.it/wp-content/uploads/2024/01/PALAZZO-PITTI-scaled.jpg",
+                    "https://c8.alamy.com/compit/b1y74f/galleria-palatina-di-palazzo-pitti-a-firenze-b1y74f.jpg"
+                ]
+            },
+            {
+                "title": "Jardim de Boboli",
+                "description": "Perca-se na beleza de um dos primeiros e mais importantes exemplos de jardim à italiana. O Jardim de Boboli, nascido como o jardim grão-ducal do Palácio Pitti, é um verdadeiro museu a céu aberto. [31] Projetado para os Médici, este parque histórico se estende por uma vasta área, oferecendo uma sucessão de terraços, fontes espetaculares como a de Netuno, grutas misteriosas como a de Buontalenti, e estátuas que evocam mitos e alegorias, criando um cenário de conto de fadas no coração de Florença. [31]",
+                "gps_coordinates": { "latitude": 43.7631, "longitude": 11.2501 },
+                "google_maps_link": "https://www.google.com/maps/search/?api=1&query=Giardino+di+Boboli,Firenze",
+                "category": "Jardim Histórico",
+                "images": [
+                    "https://cdn-imgix.headout.com/media/images/261f2364ffd9206a45354957692df41e-26981-florence-pitti-palace--boboli-garden--and-palatine-gallery-guided-tour-04.jpg?auto=format&w=900&h=562.5&q=90&ar=16%3A10&fit=crop",
+                    "https://keysofitaly.com/wp-content/uploads/2024/03/KeysOfItaly-Esperienze-Firenze-Giardini-di-Boboli-5.jpg",
+                    "https://keysofitaly.com/wp-content/uploads/2024/03/KeysOfItaly-Esperienze-Firenze-Giardini-di-Boboli.jpg",
+                    "https://www.immobiliare.it/news/app/uploads/2024/09/Giardino-di-Boboli-dove-si-trova-e-cosa-vedere.jpeg",
+                    "https://www.greenme.it/wp-content/uploads/2023/08/giardino-di-boboli-2-1024x683.jpg"
+                ]
+            },
+            {
+                "title": "Museu Nacional do Bargello",
+                "description": "Entre no templo da escultura renascentista. O Museu Nacional do Bargello, instalado em um dos edifícios públicos mais antigos de Florença, datado de 1255, já foi sede do Capitano del Popolo e prisão. [21, 40] Hoje, suas salas abrigam a mais importante coleção de escultura renascentista italiana do mundo, com obras-primas de Donatello, incluindo seu famoso Davi de bronze, além de trabalhos de Michelangelo, Verrocchio e Cellini. [21] Um lugar onde a história do edifício se funde com a da grande arte.",
+                "gps_coordinates": { "latitude": 43.7704, "longitude": 11.2578 },
+                "google_maps_link": "https://www.google.com/maps/search/?api=1&query=Museo+Nazionale+del+Bargello,Firenze",
+                "category": "Escultura",
+                "images": [
+                    "https://bargellomusei.it/wp-content/uploads/2023/11/bargello-jpg.webp",
+                    "https://upload.wikimedia.org/wikipedia/commons/thumb/e/e4/Palais_Bargello_-_Florence_%28IT52%29_-_2022-08-31_-_4.jpg/1200px-Palais_Bargello_-_Florence_%28IT52%29_-_2022-08-31_-_4.jpg",
+                    "https://aws-tiqets-cdn.imgix.net/images/content/2c8061a138e64e70bd5e3078117f0d07.jpg?auto=format%2Ccompress&fit=crop&ixlib=python-3.2.1&q=70",
+                    "https://madeoftuscany.it/image/bargello/bargello30-min.jpg",
+                    "https://www.florence-tickets.com/images/w600/storage/app/public/repository/0/fdd980a2ecf8483581d3d04b7a83f298.jpeg"
+                ]
+            },
+            {
+                "title": "Capelas dos Médici",
+                "description": "Testemunhe o poder e a glória da dinastia que moldou Florença. As Capelas dos Médici são o mausoléu da família Médici, um lugar de incrível suntuosidade. [22, 47] O complexo inclui a Sacristia Nova, projetada por Michelangelo, que com suas esculturas do Dia e da Noite, do Crepúsculo e da Aurora, representa um dos pontos mais altos da arte renascentista. Ao lado, a suntuosa Capela dos Príncipes, com seus mármores coloridos e pedras semipreciosas, celebra a grandeza dos grão-duques da Toscana.",
+                "gps_coordinates": { "latitude": 43.7752, "longitude": 11.2531 },
+                "google_maps_link": "https://www.google.com/maps/search/?api=1&query=Cappelle+Medicee,Firenze",
+                "category": "Histórico-Artístico",
+                "images": [
+                    "https://media.tacdn.com/media/attractions-splice-spp-674x446/07/79/27/ea.jpg",
+                    "https://cdn-imgix.headout.com/media/images/545c3f99e9fb56c7014398ed589682ca-medici-01.jpg",
+                    "https://bargellomusei.it/wp-content/uploads/2023/11/Cappelle_Fabiana-Privitera-12-scaled.webp",
+                    "https://michelangelobuonarrotietornato.com/wp-content/uploads/2022/02/img_5077-1-2.jpg",
+                    "https://madeoftuscany.it/image/bicitaxi/medici%20chapel%20cupola.jpg"
+                ]
+            },
+            // --- Compras e Artesanato ---
+            {
+                "title": "Via de' Tornabuoni",
+                "description": "Passeie pela passarela da moda florentina. A Via de' Tornabuoni é a rua mais elegante de Florença, um verdadeiro paraíso para os amantes do luxo. [8] Com uma história que remonta ao período medieval, esta rua tornou-se o coração pulsante da alta moda, abrigando as butiques das mais famosas grifes italianas e internacionais, como Gucci, Prada e Salvatore Ferragamo. [8] Entre palácios renascentistas e vitrines deslumbrantes, respire a atmosfera sofisticada que sempre caracterizou esta via.",
+                "gps_coordinates": { "latitude": 43.7715, "longitude": 11.2513 },
+                "google_maps_link": "https://www.google.com/maps/search/?api=1&query=Via+de'+Tornabuoni,Firenze",
+                "category": "Alta Moda",
+                "images": [
+                    "https://www.visittuscany.com/shared/visittuscany/immagini/viatornabuoni.jpg",
+                    "https://stelladitaliaflorence.com/wp-content/uploads/2024/01/Via-Tornabuoni-Firenze.jpg",
+                    "https://www.okfirenze.com/Upload/Images/27-02-2024/cr_78b26e_Tornabuoni.jpeg",
+                    "https://www.firenzemadeintuscany.com/assets/w=1500&h=740&fit=fill&f=center___images.ctfassets.net_7dc7gq8ix1ml_2xV39RCQhEZ72lQrVlWltt_a542196eeb11d3da7bea0366266e25fd_VIA_DE_0_TORNABUONI_15_DI_19.jpg",
+                    "https://www.repstatic.it/content/localirep/img/rep-firenze/2018/06/14/134549356-65348ddf-f0c4-40c6-8ccb-3afd86f7b8ac.jpg"    
+                ]
+            },
+            {
+                "title": "Bairro de Oltrarno",
+                "description": "Atravesse o Arno e mergulhe na Florença mais autêntica. O Oltrarno, literalmente 'do outro lado do Arno', é o bairro que preserva a alma do artesanato florentino. Um emaranhado de ruelas e praças pitorescas onde o tempo parece ter parado. Aqui, entre uma trattoria e um mercado de antiguidades, você encontrará as botegas históricas de artesãos que, com mãos hábeis, trabalham couro, criam joias únicas e restauram obras de arte, transmitindo um saber que se tornou sinônimo da própria cidade.",
+                "gps_coordinates": { "latitude": 43.7661, "longitude": 11.2465 },
+                "google_maps_link": "https://www.google.com/maps/search/?api=1&query=Quartiere+Oltrarno,Firenze",
+                "category": "Artesanato",
+                "images": [
+                    "https://www.repstatic.it/content/contenthub/img/2021/11/27/072114385-d2bbc3dd-5c01-465b-9ea5-296ce345af8c.jpg",
+                    "https://lh3.googleusercontent.com/proxy/UKUNW0sjM8tKWD_DSnOAbWxRBaLQCbUntO_FfDBbQ_bDyvtzdZ4T2KqPDSPQw5NAI5_H4HTaNVZg1FIj9O00JsBGjGtG8BbCJCBpACY-VcU_oLZau02udnGGNAonJu-xrr3cFw",
+                    "https://www.italianmate.com/307-thickbox_default/oltrarno-firenze-oltre-le-aspettative.jpg",
+                    "https://www.italianmate.com/308-thickbox_default/oltrarno-firenze-oltre-le-aspettative.jpg",
+                    "https://www.associazionemarginalia.org/wp-content/uploads/2018/08/Locandina-Oltrarno-jpg.jpg"
+                ]
+            },
+            {
+                "title": "Scuola del Cuoio",
+                "description": "Descubra a arte do couro no coração de um complexo monumental. A Scuola del Cuoio (Escola do Couro) nasceu após a Segunda Guerra Mundial, graças à colaboração entre os frades franciscanos do Mosteiro de Santa Croce e as famílias de artesãos Gori e Casini, com a nobre missão de ensinar um ofício aos órfãos de guerra. [6, 20] Hoje, este lugar histórico continua a ser um laboratório onde é possível admirar os mestres artesãos no trabalho e comprar produtos de couro de altíssima qualidade, feitos à mão com paixão e tradição.",
+                "gps_coordinates": { "latitude": 43.7689, "longitude": 11.2619 },
+                "google_maps_link": "https://www.google.com/maps/search/?api=1&query=Scuola+del+Cuoio,Firenze",
+                "category": "Artigos de Couro",
+                "images": [
+                    "https://citynews-firenzetoday.stgy.ovh/~media/original-hi/1640068727528/whatsapp-image-2023-09-06-at-18-02-43-1.jpeg",
+                    "https://www.firenzemadeintuscany.com/resources/places/Craft/Scuola%20del%20cuoio/Scuola%20del%20cuoio.jpg?w=1200&h=1200&fit=fill&f=faces",
+                    "https://mindtrip.ai/cdn-cgi/image/w=1200,format=webp,h=1200,fit=cover/https://iorigin.mindtrip.ai/attractions/1961/40f8/bd01/55c5/9f3b/dc64/3a20/8484",
+                    "https://lh3.googleusercontent.com/p/AF1QipPsEu_peCrJDzY9rRRk4K0_jA8PhVJrkUicGr6C=s1600-w640",
+                    "https://media.pittimmagine.com/image/upload/c_scale,f_auto,q_auto,w_600/v1618693951/EPITTI/CORPORATE/NEWS/2020/Artigiani_D-G/Scuola-del-cuoio-di-firenze-.jpg"
+                ]
+            },
+            {
+                "title": "Ponte Vecchio",
+                "description": "Atravesse a ponte mais icônica de Florença, um símbolo da cidade e da sua história. A Ponte Vecchio, com as suas características casas suspensas, é a única ponte que sobreviveu aos bombardeamentos da Segunda Guerra Mundial. [5, 17] Originalmente ocupada por açougueiros e verdureiros, em 1593 Ferdinando I ordenou que apenas ourives e joalheiros pudessem ter lojas aqui. Desde então, a ponte brilha com as suas joalharias, tornando-se o epicentro da tradição ourivesaria florentina, um lugar onde o passado e o presente se encontram sobre as águas do Arno. [2]",
+                "gps_coordinates": { "latitude": 43.7680, "longitude": 11.2531 },
+                "google_maps_link": "https://www.google.com/maps/search/?api=1&query=Ponte+Vecchio,Firenze",
+                "category": "Ourivesaria",
+                "images": [
+                    "https://storage.googleapis.com/mytour-prod/blog/1665067271397_history-and-resources-of-the-ponte-vecchio-jpeg.jpeg",
+                    "https://www.10cose.it/wp-content/uploads/2015/12/ponte-vecchio-firenze.jpg",
+                    "https://www.villacampestri.com/blog/wp-content/uploads/2017/04/Ponte-Vecchio-Firenze-Villa-Campestri-Olive-Oil-Resort.jpg",
+                    "https://www.toscana.info/wp-content/uploads/sites/123/firenze-corridoio-vasariano-lungarno.jpg",
+                    "https://sumfinity.com/wp-content/uploads/2021/02/Florence-Ponte-Vecchio-at-Night.jpg"
+                ]
+            },
+            {
+                "title": "Mercado Central",
+                "description": "Viva a experiência gastronômica florentina em um lugar que une tradição e modernidade. O Mercado Central, com a sua impressionante estrutura de ferro e vidro projetada por Giuseppe Mengoni, é o templo dos sabores toscanos. No térreo, deixe-se levar pelas cores e aromas das barracas de produtos frescos, de queijos a embutidos. No primeiro andar, uma moderna praça de alimentação espera por você, um ponto de encontro vibrante onde você pode saborear desde o clássico lampredotto até pratos gourmet e street food de alta qualidade. Uma imersão total na cultura culinária local.",
+                "gps_coordinates": { "latitude": 43.7764, "longitude": 11.2528 },
+                "google_maps_link": "https://www.google.com/maps/search/?api=1&query=Mercato+Centrale,Firenze",
+                "category": "Mercado Histórico",
+                "images": [
+                    "https://c7.alamy.com/compit/gdnp83/mercato-mercato-centrale-ristorante-firenze-italia-l-europa-gdnp83.jpg",
+                    "https://cdn.gogofirenze.it/slir/w750-h430-c750:430/images/6/0/60-mercato.jpg",
+                    "https://cdn.blastness.biz/media/820/blog/thumbs/full/mercato-centrale-piano-terra-negozio-pasta.jpg",
+                    "https://cms.getnomad.app/uploads/1600px_Verkaufstand_im_Mercato_Centrale_Florenz_03_7eba23d6a0.jpg",
+                    "https://www.cityflorence-tours.com/cms/upload/img/prodotto/43/img_563_orig.jpg"
+                ]
+            },
+            {
+                "title": "Mercado de Sant'Ambrogio",
+                "description": "Fuja das rotas turísticas e mergulhe na vida cotidiana florentina no Mercado de Sant'Ambrogio. Inaugurado em 1873, este mercado histórico é o preferido dos locais, um lugar autêntico e animado. [29, 30] Aqui, a atmosfera é genuína, as vozes dos vendedores se misturam com as dos clientes em busca de produtos frescos e genuínos, do campo diretamente para a cidade. É o lugar ideal para descobrir os verdadeiros sabores da Toscana, comprar produtos de quilômetro zero e talvez parar para um almoço rápido em uma das trattorias dentro do mercado, para uma experiência verdadeiramente florentina.",
+                "gps_coordinates": { "latitude": 43.7704, "longitude": 11.2669 },
+                "google_maps_link": "https://www.google.com/maps/search/?api=1&query=Mercato+di+Sant'Ambrogio,Firenze",
+                "category": "Mercado Histórico",
+                "images": [
+                    "https://www.repstatic.it/content/localirep/img/rep-firenze/2017/05/23/210856293-414df4d7-c539-453b-841d-e7e344a51cd3.jpg",
+                    "https://static.destinationflorence.com/immagini/9c/3b/34/54/blog_scheda_20171023113712.jpg",
+                    "https://claudiogiunta.it/wp-content/uploads/2017/03/SANTxAMBROGIO_01-1200x800.jpg",
+                    "https://www.ilblogdelmarchese.com/wp-content/uploads/2025/05/Mercato-santambrogio-firenze.jpg",
+                    "https://www.lanazione.it/image-service/view/acePublic/alias/contentid/NjlkZGE4OGItZGY0OC00/0/mercato-s-ambrogio-firenze-banchi-alimentari-sotto-la-nuova-tettoia.webp?f=16%3A9&q=1&w=1280"
+                ]
+            }
+        ]
+
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderFilterButtons();
+            createLocationCards();
+            initializeSliders();
+            // Mostra tutte le card all'inizio
+            filterLocations('Tutte');
+        });
+
+        // --- Funzioni di rendering e filtraggio ---
+
+        function renderFilterButtons() {
+            const filterContainer = document.getElementById('filter-container');
+            const categories = ['Tutte', ...new Set(locations.map(loc => loc.category))];
+
+            categories.forEach(category => {
+                const button = document.createElement('button');
+                button.className = 'filter-btn px-4 py-2 text-sm font-medium text-gray-700 bg-white rounded-md shadow-sm hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors';
+                button.textContent = category;
+                button.dataset.category = category;
+                if (category === 'Tutte') {
+                    button.classList.add('active');
+                }
+                button.addEventListener('click', () => {
+                    // Gestione classe 'active'
+                    document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+                    button.classList.add('active');
+                    // Filtra le card
+                    filterLocations(category);
+                });
+                filterContainer.appendChild(button);
+            });
+        }
+
+        function filterLocations(category) {
+            const cards = document.querySelectorAll('.location-card');
+            cards.forEach(card => {
+                if (category === 'Tutte' || card.dataset.category === category) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        function createLocationCards() {
+            const container = document.getElementById('locations-grid');
+            
+            locations.forEach((location, index) => {
+                const card = document.createElement('div');
+                // Aggiunta classe per il filtraggio
+                card.className = 'location-card bg-white rounded-lg shadow-lg overflow-hidden hover:shadow-xl transition-shadow duration-300';
+                card.dataset.category = location.category;
+                
+                const sliderId = `slider-${index}`;
+                const sliderWidth = location.images.length * 100;
+
+                const sliderHTML = `
+                    <div class="slider-container relative">
+                        <div class="slider" id="${sliderId}" style="width: ${sliderWidth}%">
+                            ${location.images.map(img => `<div class="slide" style="background-image: url('${img}')"></div>`).join('')}
+                        </div>
+                        <div class="slider-dots">
+                            ${location.images.map((_, i) => `<div class="slider-dot ${i === 0 ? 'active' : ''}" data-index="${i}" data-slider="${sliderId}"></div>`).join('')}
+                        </div>
+                    </div>`;
+                
+                card.innerHTML = `
+                    ${sliderHTML}
+                    <div class="p-6">
+                        <div class="flex justify-between items-start gap-3">
+                            <h2 class="text-xl font-bold text-gray-800">${location.title}</h2>
+                            <span class="bg-indigo-100 text-indigo-800 text-xs font-medium px-2.5 py-0.5 rounded-full whitespace-nowrap">${location.category}</span>
+                        </div>
+                        <p class="mt-3 text-gray-600 text-sm">${location.description}</p>
+                        <div class="mt-4 flex justify-between items-center">
+                            <a href="${location.google_maps_link}" target="_blank" class="text-indigo-600 hover:text-indigo-800 text-sm flex items-center">
+                                <i class="fas fa-map-marker-alt mr-1"></i> Visualizza Mappa
+                            </a>
+                            <div class="text-xs text-gray-500">
+                                <i class="fas fa-location-arrow mr-1"></i> ${location.gps_coordinates.latitude}, ${location.gps_coordinates.longitude}
+                            </div>
+                        </div>
+                    </div>`;
+                
+                container.appendChild(card);
+            });
+        }
+        
+        // --- Funzione per gli slider (invariata ma resa più robusta) ---
+
+        function initializeSliders() {
+            locations.forEach((location, index) => {
+                const sliderId = `slider-${index}`;
+                const slider = document.getElementById(sliderId);
+                const dots = document.querySelectorAll(`[data-slider="${sliderId}"]`);
+                const numImages = location.images.length;
+                
+                if (!slider || numImages <= 1) return;
+
+                let currentSlide = 0;
+                let sliderInterval;
+
+                const slideWidthPercentage = 100 / numImages;
+                const slides = slider.querySelectorAll('.slide');
+                slides.forEach(slide => { slide.style.width = `${slideWidthPercentage}%`; });
+
+                function goToSlide(slideIndex) {
+                    slider.style.transform = `translateX(-${slideIndex * slideWidthPercentage}%)`;
+                    dots.forEach(dot => dot.classList.remove('active'));
+                    if(dots[slideIndex]) dots[slideIndex].classList.add('active');
+                    currentSlide = slideIndex;
+                }
+
+                function startSlider() {
+                    sliderInterval = setInterval(() => {
+                        const nextSlide = (currentSlide + 1) % numImages;
+                        goToSlide(nextSlide);
+                    }, 4000);
+                }
+
+                function stopSlider() {
+                    clearInterval(sliderInterval);
+                }
+
+                dots.forEach(dot => {
+                    dot.addEventListener('click', () => {
+                        stopSlider();
+                        goToSlide(parseInt(dot.dataset.index));
+                        startSlider();
+                    });
+                });
+                
+                startSlider();
+            });
+        }
+    </script>
+</body>
+</html>
